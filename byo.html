@@ -122,42 +122,116 @@
         </button>
         <div class="accordion-body">
           <div class="checkbox-group">
-            <label class="checkbox-label">
-              <input type="checkbox" name="protein" value="salmon" data-extra="3.70">
-              <span>Salmon - $3.70</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="protein" value="ahi-tuna" data-extra="3.70">
-              <span>Ahi Tuna - $3.70</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="protein" value="imitation-crab" data-extra="2.70">
-              <span>Imitation Crab - $2.70</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="protein" value="tofu" data-extra="3.00">
-              <span>Tofu - $3.00</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="protein" value="sukiyaki-beef" data-extra="3.30">
-              <span>Sukiyaki Beef - $3.30</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="protein" value="duck" data-extra="4.80">
-              <span>Duck - $4.80</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="protein" value="tempura-shrimp" data-extra="3.30">
-              <span>Tempura Shrimp - $3.30</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="protein" value="japanese-fried-chicken" data-extra="3.30">
-              <span>Japanese Fried Chicken - $3.30</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="protein" value="grilled-chicken" data-extra="3.30">
-              <span>Grilled Chicken - $3.30</span>
-            </label>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="protein" value="salmon" data-extra="3.70">
+                <span>Salmon - $3.70</span>
+              </label>
+              <div class="item-qty-stepper" data-for="salmon">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="protein" value="ahi-tuna" data-extra="3.70">
+                <span>Ahi Tuna - $3.70</span>
+              </label>
+              <div class="item-qty-stepper" data-for="ahi-tuna">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="protein" value="imitation-crab" data-extra="2.70">
+                <span>Imitation Crab - $2.70</span>
+              </label>
+              <div class="item-qty-stepper" data-for="imitation-crab">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="protein" value="tofu" data-extra="3.00">
+                <span>Tofu - $3.00</span>
+              </label>
+              <div class="item-qty-stepper" data-for="tofu">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="protein" value="sukiyaki-beef" data-extra="3.30">
+                <span>Sukiyaki Beef - $3.30</span>
+              </label>
+              <div class="item-qty-stepper" data-for="sukiyaki-beef">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="protein" value="duck" data-extra="4.80">
+                <span>Duck - $4.80</span>
+              </label>
+              <div class="item-qty-stepper" data-for="duck">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="protein" value="tempura-shrimp" data-extra="3.30">
+                <span>Tempura Shrimp - $3.30</span>
+              </label>
+              <div class="item-qty-stepper" data-for="tempura-shrimp">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="protein" value="japanese-fried-chicken" data-extra="3.30">
+                <span>Japanese Fried Chicken - $3.30</span>
+              </label>
+              <div class="item-qty-stepper" data-for="japanese-fried-chicken">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="protein" value="grilled-chicken" data-extra="3.30">
+                <span>Grilled Chicken - $3.30</span>
+              </label>
+              <div class="item-qty-stepper" data-for="grilled-chicken">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="protein" value="ramen-egg" data-extra="2.30">
+                <span>Ramen Egg - $2.30</span>
+              </label>
+              <div class="item-qty-stepper" data-for="ramen-egg">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
           </div>
           <button type="button" class="done-btn">Next</button>
         </div>
@@ -171,50 +245,127 @@
         </button>
         <div class="accordion-body">
           <div class="checkbox-group">
-            <label class="checkbox-label">
-              <input type="checkbox" name="veggies" value="edamame">
-              <span>Edamame</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="veggies" value="red-onion">
-              <span>Red Onion</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="veggies" value="carrot">
-              <span>Carrot</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="veggies" value="zucchini">
-              <span>Zucchini</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="veggies" value="sweet-corn">
-              <span>Sweet Corn</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="veggies" value="cabbage">
-              <span>Cabbage</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="veggies" value="cucumber">
-              <span>Cucumber</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="veggies" value="red-pepper">
-              <span>Red Pepper</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="veggies" value="sweet-onion">
-              <span>Sweet Onion</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="veggies" value="kale">
-              <span>Kale</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="veggies" value="mixed-greens">
-              <span>Mixed Greens</span>
-            </label>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="veggies" value="edamame">
+                <span>Edamame</span>
+              </label>
+              <div class="item-qty-stepper" data-for="edamame">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="veggies" value="red-onion">
+                <span>Red Onion</span>
+              </label>
+              <div class="item-qty-stepper" data-for="red-onion">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="veggies" value="carrot">
+                <span>Carrot</span>
+              </label>
+              <div class="item-qty-stepper" data-for="carrot">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="veggies" value="zucchini-noodles">
+                <span>Zucchini Noodles</span>
+              </label>
+              <div class="item-qty-stepper" data-for="zucchini-noodles">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="veggies" value="sweet-corn">
+                <span>Sweet Corn</span>
+              </label>
+              <div class="item-qty-stepper" data-for="sweet-corn">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="veggies" value="cabbage">
+                <span>Cabbage</span>
+              </label>
+              <div class="item-qty-stepper" data-for="cabbage">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="veggies" value="cucumber">
+                <span>Cucumber</span>
+              </label>
+              <div class="item-qty-stepper" data-for="cucumber">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="veggies" value="red-pepper">
+                <span>Red Pepper</span>
+              </label>
+              <div class="item-qty-stepper" data-for="red-pepper">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="veggies" value="sweet-onion">
+                <span>Sweet Onion</span>
+              </label>
+              <div class="item-qty-stepper" data-for="sweet-onion">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="veggies" value="kale">
+                <span>Kale</span>
+              </label>
+              <div class="item-qty-stepper" data-for="kale">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="veggies" value="mixed-greens">
+                <span>Mixed Greens</span>
+              </label>
+              <div class="item-qty-stepper" data-for="mixed-greens">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
           </div>
           <button type="button" class="done-btn">Next</button>
         </div>
@@ -228,54 +379,138 @@
         </button>
         <div class="accordion-body">
           <div class="checkbox-group">
-            <label class="checkbox-label">
-              <input type="checkbox" name="toppings" value="seaweed-salad">
-              <span>Seaweed Salad</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="toppings" value="imitation-crab-salad">
-              <span>Imitation Crab Salad</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="toppings" value="tempura-bits">
-              <span>Tempura Bits</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="toppings" value="avocado">
-              <span>Avocado</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="toppings" value="mandarin-orange">
-              <span>Mandarin Orange</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="toppings" value="shitake-mushrooms">
-              <span>Shitake Mushrooms</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="toppings" value="pea-shoots">
-              <span>Pea Shoots</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="toppings" value="egg">
-              <span>Egg</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="toppings" value="ramen-egg">
-              <span>Ramen Egg</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="toppings" value="caplin-fish-roe">
-              <span>Caplin Fish Roe</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="toppings" value="dried-seaweed">
-              <span>Dried Seaweed</span>
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" name="toppings" value="beet-slaw">
-              <span>Beet Slaw</span>
-            </label>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="toppings" value="seaweed-salad">
+                <span>Seaweed Salad</span>
+              </label>
+              <div class="item-qty-stepper" data-for="seaweed-salad">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="toppings" value="imitation-crab-salad">
+                <span>Imitation Crab Salad</span>
+              </label>
+              <div class="item-qty-stepper" data-for="imitation-crab-salad">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="toppings" value="tempura-bits">
+                <span>Tempura Bits</span>
+              </label>
+              <div class="item-qty-stepper" data-for="tempura-bits">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="toppings" value="avocado">
+                <span>Avocado</span>
+              </label>
+              <div class="item-qty-stepper" data-for="avocado">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="toppings" value="mandarin-orange">
+                <span>Mandarin Orange</span>
+              </label>
+              <div class="item-qty-stepper" data-for="mandarin-orange">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="toppings" value="shitake-mushrooms">
+                <span>Shitake Mushrooms</span>
+              </label>
+              <div class="item-qty-stepper" data-for="shitake-mushrooms">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="toppings" value="pea-shoots">
+                <span>Pea Shoots</span>
+              </label>
+              <div class="item-qty-stepper" data-for="pea-shoots">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="toppings" value="egg">
+                <span>Egg</span>
+              </label>
+              <div class="item-qty-stepper" data-for="egg">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="toppings" value="ramen-egg">
+                <span>Ramen Egg</span>
+              </label>
+              <div class="item-qty-stepper" data-for="ramen-egg">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="toppings" value="caplin-fish-roe">
+                <span>Caplin Fish Roe</span>
+              </label>
+              <div class="item-qty-stepper" data-for="caplin-fish-roe">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="toppings" value="dried-seaweed">
+                <span>Dried Seaweed</span>
+              </label>
+              <div class="item-qty-stepper" data-for="dried-seaweed">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="checkbox-label">
+                <input type="checkbox" name="toppings" value="beet-slaw">
+                <span>Beet Slaw</span>
+              </label>
+              <div class="item-qty-stepper" data-for="beet-slaw">
+                <button type="button" class="item-qty-btn item-minus" aria-label="Decrease quantity">-</button>
+                <span class="item-qty-count">1</span>
+                <button type="button" class="item-qty-btn item-plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
           </div>
           <button type="button" class="done-btn">Next</button>
         </div>

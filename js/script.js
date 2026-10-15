@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupAccordionLogic();
   setupSizeSelectionHandler();
   setupMaxLimitCheckboxes();
+  setupItemQuantitySteppers();
   setupPriceCalculation();
   setupQuantityCounter();
   setupOrderSummaryLogic();
@@ -105,6 +106,86 @@ function setupAccordionLogic() {
   });
 }
 
+function getItemQty(cb) {
+  const row = cb.closest('.option-row');
+  if (row) {
+    const countEl = row.querySelector('.item-qty-count');
+    if (countEl) {
+      return parseInt(countEl.textContent, 10) || 1;
+    }
+  }
+  return 1;
+}
+
+function setupItemQuantitySteppers() {
+  const optionRows = document.querySelectorAll('.option-row');
+  optionRows.forEach(row => {
+    const cb = row.querySelector('input[type="checkbox"]');
+    const stepper = row.querySelector('.item-qty-stepper');
+    const minusBtn = row.querySelector('.item-minus');
+    const plusBtn = row.querySelector('.item-plus');
+    const countEl = row.querySelector('.item-qty-count');
+
+    if (cb && stepper) {
+      cb.addEventListener('change', () => {
+        if (cb.checked) {
+          stepper.classList.add('active');
+          if (countEl) countEl.textContent = '1';
+          registerPortionAdd(cb.name, cb.value);
+        } else {
+          stepper.classList.remove('active');
+          if (countEl) countEl.textContent = '1';
+          // Remove all remaining portions for this unchecked item
+          if (cb.name === 'veggies') {
+            veggiePortionHistory = veggiePortionHistory.filter(v => v !== cb.value);
+          } else if (cb.name === 'toppings') {
+            toppingPortionHistory = toppingPortionHistory.filter(v => v !== cb.value);
+          }
+        }
+        if (typeof updateProteinUI === 'function') updateProteinUI();
+        if (typeof updateVeggieUI === 'function') updateVeggieUI();
+        if (typeof updateToppingUI === 'function') updateToppingUI();
+        calculateTotalPrice();
+      });
+    }
+
+    if (minusBtn && countEl && cb) {
+      minusBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        registerPortionRemove(cb.name, cb.value);
+        let count = parseInt(countEl.textContent, 10) || 1;
+        if (count > 1) {
+          count--;
+          countEl.textContent = count;
+        } else {
+          // decrementing 1 unchecks the item
+          cb.checked = false;
+          stepper.classList.remove('active');
+          countEl.textContent = '1';
+        }
+        if (typeof updateProteinUI === 'function') updateProteinUI();
+        if (typeof updateVeggieUI === 'function') updateVeggieUI();
+        if (typeof updateToppingUI === 'function') updateToppingUI();
+        calculateTotalPrice();
+      });
+    }
+
+    if (plusBtn && countEl && cb) {
+      plusBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        let count = parseInt(countEl.textContent, 10) || 1;
+        count++;
+        countEl.textContent = count;
+        registerPortionAdd(cb.name, cb.value);
+        if (typeof updateProteinUI === 'function') updateProteinUI();
+        if (typeof updateVeggieUI === 'function') updateVeggieUI();
+        if (typeof updateToppingUI === 'function') updateToppingUI();
+        calculateTotalPrice();
+      });
+    }
+  });
+}
+
 function setupSizeSelectionHandler() {
   const sizeSelect = document.getElementById('size-select');
   if (sizeSelect) {
@@ -117,11 +198,92 @@ function setupSizeSelectionHandler() {
         if (byoDesc) byoDesc.textContent = desc;
       }
       
+      if (typeof updateProteinUI === 'function') updateProteinUI();
       if (typeof updateVeggieUI === 'function') updateVeggieUI();
       if (typeof updateToppingUI === 'function') updateToppingUI();
       calculateTotalPrice();
     });
   }
+}
+
+function updateProteinUI() {
+  const proteinStep = document.getElementById('step-3');
+  if (proteinStep) {
+    const proteinCheckboxes = proteinStep.querySelectorAll('input[type="checkbox"]');
+    proteinCheckboxes.forEach(cb => {
+      const span = cb.nextElementSibling;
+      if (!span) return;
+      
+      let baseName = span.getAttribute('data-base-name');
+      if (!baseName) {
+        baseName = span.textContent.split(' - ')[0].trim();
+        span.setAttribute('data-base-name', baseName);
+      }
+
+      const unitExtra = parseFloat(cb.getAttribute('data-extra')) || 0;
+      const unitExtraStr = `$${unitExtra.toFixed(2)}`;
+
+      if (cb.checked) {
+        const qty = getItemQty(cb);
+        const totalCost = (unitExtra * qty).toFixed(2);
+        span.innerHTML = `${baseName} - ${unitExtraStr} <span style="color: #666; font-size: 0.9em; font-weight: normal;">(+ $${totalCost})</span>`;
+      } else {
+        span.textContent = `${baseName} - ${unitExtraStr}`;
+      }
+    });
+  }
+}
+
+// Global portion history queues: each portion added pushes that item's value onto the queue.
+// When an item's count decreases or it is unchecked, its most recent entry is removed.
+let veggiePortionHistory = [];
+let toppingPortionHistory = [];
+
+function registerPortionAdd(category, itemValue) {
+  if (category === 'veggies') {
+    veggiePortionHistory.push(itemValue);
+  } else if (category === 'toppings') {
+    toppingPortionHistory.push(itemValue);
+  }
+}
+
+function registerPortionRemove(category, itemValue) {
+  const history = category === 'veggies' ? veggiePortionHistory : toppingPortionHistory;
+  const lastIdx = history.lastIndexOf(itemValue);
+  if (lastIdx !== -1) {
+    history.splice(lastIdx, 1);
+  }
+}
+
+function syncPortionHistory(category, checkboxes) {
+  const history = category === 'veggies' ? veggiePortionHistory : toppingPortionHistory;
+  const targetCounts = {};
+  checkboxes.forEach(cb => {
+    if (cb.checked) {
+      targetCounts[cb.value] = getItemQty(cb);
+    }
+  });
+
+  // Remove entries from history that exceed current counts or are unchecked
+  const currentCounts = {};
+  for (let i = history.length - 1; i >= 0; i--) {
+    const val = history[i];
+    const maxAllowed = targetCounts[val] || 0;
+    const currentSoFar = currentCounts[val] || 0;
+    if (currentSoFar >= maxAllowed) {
+      history.splice(i, 1);
+    } else {
+      currentCounts[val] = currentSoFar + 1;
+    }
+  }
+
+  // Add any missing portions if needed
+  Object.keys(targetCounts).forEach(val => {
+    const needed = targetCounts[val] - (currentCounts[val] || 0);
+    for (let j = 0; j < needed; j++) {
+      history.push(val);
+    }
+  });
 }
 
 function updateVeggieUI() {
@@ -142,23 +304,42 @@ function updateVeggieUI() {
 
   const veggieStep = document.getElementById('step-4');
   if (veggieStep) {
-    const veggieCheckboxes = veggieStep.querySelectorAll('input[type="checkbox"]');
-    const checkedCount = veggieStep.querySelectorAll('input[type="checkbox"]:checked').length;
-    
+    const veggieCheckboxes = Array.from(veggieStep.querySelectorAll('input[type="checkbox"]'));
+    syncPortionHistory('veggies', veggieCheckboxes);
+
+    let totalVeggiePortions = veggiePortionHistory.length;
+
+    // Count extra portions per item: portions from index freeVeggiesCount onwards in history
+    const extraCounts = {};
+    for (let i = freeVeggiesCount; i < veggiePortionHistory.length; i++) {
+      const val = veggiePortionHistory[i];
+      extraCounts[val] = (extraCounts[val] || 0) + 1;
+    }
+
     veggieCheckboxes.forEach(cb => {
       const span = cb.nextElementSibling;
       if (!span) return;
       
       let baseText = span.getAttribute('data-base-text');
       if (!baseText) {
-        baseText = span.textContent.replace(' - $1.30', '');
+        baseText = span.textContent.replace(/ - \$\d+\.\d+/, '');
         span.setAttribute('data-base-text', baseText);
       }
 
-      if (checkedCount >= freeVeggiesCount && !cb.checked && freeVeggiesCount > 0) {
-        span.textContent = baseText + ' - $1.30';
+      if (cb.checked) {
+        const extraPortions = extraCounts[cb.value] || 0;
+        if (extraPortions > 0) {
+          span.innerHTML = `${baseText} <span style="color: #666; font-size: 0.9em; font-weight: normal;">(+ $${(extraPortions * 1.30).toFixed(2)})</span>`;
+        } else {
+          span.textContent = baseText;
+        }
       } else {
-        span.textContent = baseText;
+        // Unselected options: show price if user has reached/exceeded free limit
+        if (freeVeggiesCount > 0 && totalVeggiePortions >= freeVeggiesCount) {
+          span.textContent = baseText + ' - $1.30';
+        } else {
+          span.textContent = baseText;
+        }
       }
     });
   }
@@ -182,23 +363,42 @@ function updateToppingUI() {
 
   const toppingStep = document.getElementById('step-5');
   if (toppingStep) {
-    const toppingCheckboxes = toppingStep.querySelectorAll('input[type="checkbox"]');
-    const checkedCount = toppingStep.querySelectorAll('input[type="checkbox"]:checked').length;
-    
+    const toppingCheckboxes = Array.from(toppingStep.querySelectorAll('input[type="checkbox"]'));
+    syncPortionHistory('toppings', toppingCheckboxes);
+
+    let totalToppingPortions = toppingPortionHistory.length;
+
+    // Count extra portions per item: portions from index freeToppingsCount onwards in history
+    const extraCounts = {};
+    for (let i = freeToppingsCount; i < toppingPortionHistory.length; i++) {
+      const val = toppingPortionHistory[i];
+      extraCounts[val] = (extraCounts[val] || 0) + 1;
+    }
+
     toppingCheckboxes.forEach(cb => {
       const span = cb.nextElementSibling;
       if (!span) return;
       
       let baseText = span.getAttribute('data-base-text');
       if (!baseText) {
-        baseText = span.textContent.replace(' - $2.30', '');
+        baseText = span.textContent.replace(/ - \$\d+\.\d+/, '');
         span.setAttribute('data-base-text', baseText);
       }
 
-      if (checkedCount >= freeToppingsCount && !cb.checked && freeToppingsCount > 0) {
-        span.textContent = baseText + ' - $2.30';
+      if (cb.checked) {
+        const extraPortions = extraCounts[cb.value] || 0;
+        if (extraPortions > 0) {
+          span.innerHTML = `${baseText} <span style="color: #666; font-size: 0.9em; font-weight: normal;">(+ $${(extraPortions * 2.30).toFixed(2)})</span>`;
+        } else {
+          span.textContent = baseText;
+        }
       } else {
-        span.textContent = baseText;
+        // Unselected options: show price if user has reached/exceeded free limit
+        if (freeToppingsCount > 0 && totalToppingPortions >= freeToppingsCount) {
+          span.textContent = baseText + ' - $2.30';
+        } else {
+          span.textContent = baseText;
+        }
       }
     });
   }
@@ -236,7 +436,10 @@ function setupPriceCalculation() {
   if (proteinStep) {
     const proteinCheckboxes = proteinStep.querySelectorAll('input[type="checkbox"]');
     proteinCheckboxes.forEach(cb => {
-      cb.addEventListener('change', calculateTotalPrice);
+      cb.addEventListener('change', () => {
+        updateProteinUI();
+        calculateTotalPrice();
+      });
     });
   }
 
@@ -262,6 +465,7 @@ function setupPriceCalculation() {
     });
   }
 
+  updateProteinUI();
   updateVeggieUI();
   updateToppingUI();
   calculateTotalPrice();
@@ -285,8 +489,9 @@ function calculateTotalPrice() {
   const checkedProteins = document.querySelectorAll('#step-3 input[type="checkbox"]:checked');
   checkedProteins.forEach(cb => {
     const extraAttr = cb.getAttribute('data-extra');
+    const qty = getItemQty(cb);
     if (extraAttr) {
-      proteinExtra += parseFloat(extraAttr) || 0;
+      proteinExtra += (parseFloat(extraAttr) || 0) * qty;
     }
   });
 
@@ -297,8 +502,13 @@ function calculateTotalPrice() {
   else if (sizeValue === 'regular') freeVeggiesCount = 3;
   else if (sizeValue === 'large') freeVeggiesCount = 4;
 
-  if (checkedVeggies.length > freeVeggiesCount) {
-    veggieExtra = (checkedVeggies.length - freeVeggiesCount) * 1.30;
+  let totalVeggiePortions = 0;
+  checkedVeggies.forEach(cb => {
+    totalVeggiePortions += getItemQty(cb);
+  });
+
+  if (totalVeggiePortions > freeVeggiesCount) {
+    veggieExtra = (totalVeggiePortions - freeVeggiesCount) * 1.30;
   }
 
   let toppingExtra = 0;
@@ -308,8 +518,13 @@ function calculateTotalPrice() {
   else if (sizeValue === 'regular') freeToppingsCount = 2;
   else if (sizeValue === 'large') freeToppingsCount = 3;
 
-  if (checkedToppings.length > freeToppingsCount) {
-    toppingExtra = (checkedToppings.length - freeToppingsCount) * 2.30;
+  let totalToppingPortions = 0;
+  checkedToppings.forEach(cb => {
+    totalToppingPortions += getItemQty(cb);
+  });
+
+  if (totalToppingPortions > freeToppingsCount) {
+    toppingExtra = (totalToppingPortions - freeToppingsCount) * 2.30;
   }
 
   const qtyNum = document.querySelector('.qty-num');
@@ -357,6 +572,7 @@ function setupOrderSummaryLogic() {
   if (!seeOrderRow || !bottomBar || !summaryContent) return;
 
   summaryContent.addEventListener('click', (e) => {
+    // Bowl overall quantity +/- in summary
     if (e.target.classList.contains('summary-minus-btn')) {
       const mainMinusBtn = document.querySelector('.minus-btn:not(.summary-minus-btn)');
       if (mainMinusBtn) {
@@ -375,7 +591,44 @@ function setupOrderSummaryLogic() {
       return;
     }
 
-    const item = e.target.closest('.summary-item');
+    // Per-item stepper in summary
+    if (e.target.classList.contains('summary-item-minus')) {
+      const item = e.target.closest('.summary-item');
+      if (!item) return;
+      const name = item.getAttribute('data-input-name');
+      const val = item.getAttribute('data-input-value');
+      const row = document.querySelector(`.option-row:has(input[name="${name}"][value="${val}"])`);
+      if (row) {
+        const rowMinus = row.querySelector('.item-minus');
+        if (rowMinus) {
+          rowMinus.click();
+          populateOrderSummary(summaryContent);
+        }
+      }
+      return;
+    }
+
+    if (e.target.classList.contains('summary-item-plus')) {
+      const item = e.target.closest('.summary-item');
+      if (!item) return;
+      const name = item.getAttribute('data-input-name');
+      const val = item.getAttribute('data-input-value');
+      const row = document.querySelector(`.option-row:has(input[name="${name}"][value="${val}"])`);
+      if (row) {
+        const rowPlus = row.querySelector('.item-plus');
+        if (rowPlus) {
+          rowPlus.click();
+          populateOrderSummary(summaryContent);
+        }
+      }
+      return;
+    }
+
+    // Toggle item selection when clicking on the checkbox or label
+    const contentTarget = e.target.closest('.summary-item-content');
+    if (!contentTarget) return;
+
+    const item = contentTarget.closest('.summary-item');
     if (!item || !item.hasAttribute('data-input-name')) return;
     
     const name = item.getAttribute('data-input-name');
@@ -402,6 +655,7 @@ function setupOrderSummaryLogic() {
         const section = item.closest('.summary-section');
         section.appendChild(item);
       }
+      populateOrderSummary(summaryContent);
     }
   });
 
@@ -464,34 +718,72 @@ function populateOrderSummary(container) {
   `;
 
   // Helper to generate sections
-  const generateSection = (title, nameAttr) => {
-    const checked = document.querySelectorAll(`input[name="${nameAttr}"]:checked`);
+  const generateSection = (title, nameAttr, supportsQty = false) => {
+    let checked = Array.from(document.querySelectorAll(`input[name="${nameAttr}"]:checked`));
     let sectionHtml = `<div class="summary-section"><div class="summary-title">${title}</div>`;
     
     if (checked.length === 0) {
       sectionHtml += `<div class="summary-item empty-text">None selected</div>`;
     } else {
-      checked.forEach((cb, index) => {
+      // Calculate extra counts from portion history queues
+      const extraCounts = {};
+      if (nameAttr === 'veggies') {
+        for (let i = freeVeggiesCount; i < veggiePortionHistory.length; i++) {
+          const val = veggiePortionHistory[i];
+          extraCounts[val] = (extraCounts[val] || 0) + 1;
+        }
+      } else if (nameAttr === 'toppings') {
+        for (let i = freeToppingsCount; i < toppingPortionHistory.length; i++) {
+          const val = toppingPortionHistory[i];
+          extraCounts[val] = (extraCounts[val] || 0) + 1;
+        }
+      }
+
+      checked.forEach((cb) => {
         let labelText = cb.value;
         if (cb.nextElementSibling) {
-          labelText = cb.nextElementSibling.getAttribute('data-base-text') || cb.nextElementSibling.textContent.replace(/ - \$\d+\.\d+/, '');
-        }
-
-        if (nameAttr === 'veggies' && index >= freeVeggiesCount) {
-          labelText += ' <span style="color: #666; font-size: 0.9em;">(+ $1.30)</span>';
-        } else if (nameAttr === 'toppings' && index >= freeToppingsCount) {
-          labelText += ' <span style="color: #666; font-size: 0.9em;">(+ $2.30)</span>';
-        } else if (nameAttr === 'protein') {
-          const extraPrice = cb.getAttribute('data-extra');
-          if (extraPrice) {
-            labelText += ` <span style="color: #666; font-size: 0.9em;">(+ $${parseFloat(extraPrice).toFixed(2)})</span>`;
+          if (nameAttr === 'protein') {
+            labelText = cb.nextElementSibling.getAttribute('data-base-name') || cb.nextElementSibling.textContent.split(' - ')[0].trim();
+          } else {
+            labelText = cb.nextElementSibling.getAttribute('data-base-text') || cb.nextElementSibling.textContent.replace(/ - \$\d+\.\d+/, '').split(' (+')[0].trim();
           }
         }
 
+        const qty = getItemQty(cb);
+
+        if (nameAttr === 'veggies') {
+          const extra = extraCounts[cb.value] || 0;
+          if (extra > 0) {
+            labelText += ` <span style="color: #666; font-size: 0.9em;">(+ $${(extra * 1.30).toFixed(2)})</span>`;
+          }
+        } else if (nameAttr === 'toppings') {
+          const extra = extraCounts[cb.value] || 0;
+          if (extra > 0) {
+            labelText += ` <span style="color: #666; font-size: 0.9em;">(+ $${(extra * 2.30).toFixed(2)})</span>`;
+          }
+        } else if (nameAttr === 'protein') {
+          const extraPrice = cb.getAttribute('data-extra');
+          if (extraPrice) {
+            const totalProteinPrice = (parseFloat(extraPrice) * qty).toFixed(2);
+            labelText += ` <span style="color: #666; font-size: 0.9em;">(+ $${totalProteinPrice})</span>`;
+          }
+        }
+
+        const stepperHtml = supportsQty ? `
+          <div class="summary-item-stepper">
+            <button type="button" class="item-qty-btn summary-item-minus" aria-label="Decrease quantity">-</button>
+            <span class="item-qty-count">${qty}</span>
+            <button type="button" class="item-qty-btn summary-item-plus" aria-label="Increase quantity">+</button>
+          </div>
+        ` : '';
+
         sectionHtml += `
-          <div class="summary-item" data-input-name="${nameAttr}" data-input-value="${cb.value}" style="cursor: pointer;">
-            <div class="summary-item-box checked">&#10003;</div>
-            <span>${labelText}</span>
+          <div class="summary-item" data-input-name="${nameAttr}" data-input-value="${cb.value}">
+            <div class="summary-item-content" style="cursor: pointer;">
+              <div class="summary-item-box checked">&#10003;</div>
+              <span>${labelText}</span>
+            </div>
+            ${stepperHtml}
           </div>
         `;
       });
@@ -500,12 +792,12 @@ function populateOrderSummary(container) {
     return sectionHtml;
   };
 
-  html += generateSection('Base', 'base');
-  html += generateSection('Proteins', 'protein');
-  html += generateSection('Veggies', 'veggies');
-  html += generateSection('Toppings', 'toppings');
-  html += generateSection('Sauces', 'sauces');
-  html += generateSection('Garnishes', 'garnishes');
+  html += generateSection('Base', 'base', false);
+  html += generateSection('Proteins', 'protein', true);
+  html += generateSection('Veggies', 'veggies', true);
+  html += generateSection('Toppings', 'toppings', true);
+  html += generateSection('Sauces', 'sauces', false);
+  html += generateSection('Garnishes', 'garnishes', false);
 
   const qtyNum = document.querySelector('.qty-num');
   const currentQty = qtyNum ? parseInt(qtyNum.textContent, 10) || 1 : 1;
@@ -542,7 +834,11 @@ function setupAddToCartLogic() {
         : 'Custom Bowl';
         
       const getCheckedNames = (name) => Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
-        .map(el => el.nextElementSibling.textContent.split(' - ')[0].trim());
+        .map(el => {
+          const baseName = el.nextElementSibling.textContent.split(' - ')[0].trim();
+          const qty = getItemQty(el);
+          return qty > 1 ? `${baseName} x${qty}` : baseName;
+        });
 
       const bases = getCheckedNames('base');
       const proteins = getCheckedNames('protein');
